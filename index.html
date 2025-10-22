@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Litigation Jackson</title>
+    <style>
+        body {
+            font-family: monospace;
+            background-color: #000;
+            color: #0f0;
+            margin: 0;
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+        #title-screen {
+            text-align: center;
+            margin-top: 100px;
+        }
+        #game {
+            display: none;
+        }
+        #scoreboard {
+            border: 1px solid #0f0;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        #text {
+            border: 1px solid #0f0;
+            padding: 10px;
+            margin-bottom: 20px;
+            height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        #choices {
+            text-align: center;
+        }
+        button {
+            background-color: #000;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0f0;
+            color: #000;
+        }
+        .learn-more {
+            cursor: pointer;
+            color: #ff0;
+            text-decoration: underline;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="title-screen">
+        <h1>Litigation Jackson</h1>
+        <p>A retro adventure in contract negotiation!</p>
+        <button onclick="startGame()">Start New Game</button>
+        <button onclick="restartGame()" id="restart-btn" style="display:none;">Restart</button>
+    </div>
+    <div id="game">
+        <div id="scoreboard"></div>
+        <div id="text"></div>
+        <div id="choices"></div>
+    </div>
+
+    <script>
+        // Expanded data structures for more variety and actual samples
+        // To expand further: Add more to arrays below
+        const projects = [
+            "Transmission rebuild for Western Utilities",
+            "Helicopter patrol contract for Midwest Power",
+            "Turnkey substation EPC for Eastern Grid",
+            "Underground cable installation for City Energy",
+            "Wind farm connection project for Green Power Inc.",
+            "Solar array integration for Eco Utilities",
+            "High-voltage line upgrade for National Grid",
+            "Submarine cable laying for Coastal Power",
+            "Smart grid implementation for Urban Electric",
+            "Emergency repair contract for Storm Response Co.",
+            "Distribution network expansion for Rural Electrification",
+            "Power plant decommissioning for Legacy Energy",
+            "EV charging infrastructure buildout for AutoCharge",
+            "Battery storage facility construction for StorePower",
+            "Microgrid setup for Island Communities",
+            "Fiber optic integration with power lines for Telecom Utility",
+            "Hydroelectric dam retrofit for WaterPower",
+            "Nuclear facility maintenance for Atomic Energy",
+            "Biomass plant construction for BioFuel Power",
+            "Geothermal exploration and setup for EarthHeat"
+            // Added more for hundreds of scenarios via combinations
+        ];
+
+        const customerTypes = [
+            { name: "Risk-averse government entity", pushbackChance: 0.2, walkAwayChance: 0.1 },
+            { name: "Cost-focused utility", pushbackChance: 0.5, walkAwayChance: 0.3 },
+            { name: "Aggressive private developer", pushbackChance: 0.8, walkAwayChance: 0.5 },
+            { name: "Environmentally conscious non-profit", pushbackChance: 0.4, walkAwayChance: 0.2 },
+            { name: "Large corporate client", pushbackChance: 0.6, walkAwayChance: 0.4 },
+            { name: "Small municipal authority", pushbackChance: 0.3, walkAwayChance: 0.15 },
+            { name: "International consortium", pushbackChance: 0.7, walkAwayChance: 0.45 },
+            { name: "Tech-savvy startup", pushbackChance: 0.55, walkAwayChance: 0.35 }
+            // Expanded for more variety
+        ];
+
+        const clauses = [
+            {
+                name: "Indemnification",
+                redlines: [
+                    "Consultant shall indemnify and hold harmless (but not defend) the Client, its officers, directors, employees, from and against those liabilities, damages and costs that Client is legally obligated to pay as a result of the death or bodily injury to any person or the destruction or damage to any property, to the extent caused by the willful misconduct, negligent act, error or omission of the Consultant or anyone for whom the Consultant is legally responsible, subject to any limitations of liability contained in this Agreement.",
+                    "To the fullest extent permitted by law, the Contractor shall indemnify and hold harmless the Owner, Architect, and their agents and employees from claims, losses, and expenses, including attorney fees, arising out of or resulting from performance of the Work or a breach of this agreement provided that such claim, damage, loss, or expense is attributable to bodily injury, sickness, disease or death, or to injury to or destruction of tangible property (other than the Work itself), but only to the extent caused by the negligent acts or omissions of the Contractor or any of the Contractor’s employees, subcontractors, or suppliers.",
+                    "Contractor shall indemnify, defend, and hold harmless Purchaser, its parent, subsidiaries and affiliates, and each of their respective agents, officers, employees, successors, assigns, and indemnitees (the “Indemnified Parties”) from and against any and all losses, costs, damages, claims, liabilities, fines, penalties, and expenses (including, without limitation, attorneys’ and other professional fees and expenses, any mediation, arbitration, and court costs, incurred in connection with the investigation, defense, and settlement of any claim asserted against any Indemnified Party or the",
+                    "Each Party shall indemnify, defend and hold harmless the other Party and its Affiliates, employees or directors from any and all costs, expenses, damages, judgments and liabilities (including reasonable attorneys’ fees and the cost of any recalls) incurred by or rendered against the other Party or its Affiliates, employees or directors in any Third Party claim made or suit brought to the extent resulting from any of the following: (i) a breach by such Party or any of the subcontractors retained by such Party of its obligations, representations and warranties pursuant to this Agreement (excep"
+                    // Added multiple actual samples from search results
+                ],
+                options: {
+                    accept: {
+                        risk: 20, profit: -10, relation: 10,
+                        exp: "Accepting this exposes your company to unlimited liability, potentially leading to financial ruin from unforeseen claims.",
+                        bp: "Never accept open-ended indemnification; always limit to your company's negligence and cap damages."
+                    },
+                    counter: {
+                        risk: 5, profit: 0, relation: 5,
+                        exp: "Countering balances the clause, reducing exposure while showing willingness to negotiate.",
+                        bp: "Propose mutual indemnification limited to direct negligence."
+                    },
+                    reject: {
+                        risk: -10, profit: 10, relation: -15,
+                        exp: "Rejecting protects your company but may strain the relationship if the customer sees it as inflexible.",
+                        bp: "Reject only if you can justify with industry standards; offer alternatives."
+                    }
+                }
+            },
+            {
+                name: "Limitation of Liability",
+                redlines: [
+                    "To the fullest extent permitted by law, the total liability, in the aggregate, of Consultant, Consultant’s officers, directors, partners, employees, agents, and subconsultants, to Client, and anyone claiming by, through, or under Client for any claims, losses, costs, or damages whatsoever arising out of, resulting from or in any way related to this Project or Agreement from any cause or causes, including but not limited to negligence, professional errors and omissions, strict liability, breach of contract, or breach of warranty, shall not exceed the total compensation received by Consultant or $50,000 whichever is greater.",
+                    "The total liability of the Contractor to the Employer, under or in connection with the Contract other than under Sub-Clause [insert clause, e.g. indemnities or intellectual property], shall not exceed the sum resulting from the application of a multiplier (less or greater than one) to the Accepted Contract Amount, as stated in the SCC, or (if such multiplier or other sum is not so stated,) the Accepted Contract Amount.",
+                    "To the fullest extent permitted by law, and notwithstanding anything else in this Agreement to the contrary, the total liability, in the aggregate, of the Engineer, the Engineer’s officers, directors, partners, employees, agents and consultants, to the Owner and anyone claiming by, through or under the Owner for any and all injuries, claims, losses, expenses, costs or damages arising out of, resulting from or in any way related to the Project or this Agreement from any cause or causes, including but not limited to the negligence, professional errors or omissions, strict liability or breach of contract or warranty express or implied of the Engineer, the Engineer’s officers, directors, partners, employees, agents or consultants, or any of them, shall not exceed the total amount of $ [insert amount] or the total compensation received by the Engineer under this Agreement, whichever is greater.",
+                    "The liability of the Contractor under this Agreement shall be limited to the total amount of the Contract Price, except as provided in Clauses [insert clauses, e.g. indemnities or intellectual property]."
+                    // Added samples
+                ],
+                options: {
+                    accept: {
+                        risk: 25, profit: -15, relation: 10,
+                        exp: "Unlimited liability can bankrupt your firm over a single incident.",
+                        bp: "Always limit liability to the contract value or a multiple thereof."
+                    },
+                    counter: {
+                        risk: 10, profit: -5, relation: 5,
+                        exp: "A countered limit protects assets while maintaining dialogue.",
+                        bp: "Counter with liability capped at 1-2x contract value."
+                    },
+                    reject: {
+                        risk: -15, profit: 15, relation: -20,
+                        exp: "Full rejection safeguards finances but risks deal breakdown.",
+                        bp: "Reject if unlimited; reference insurance limits."
+                    }
+                }
+            },
+            {
+                name: "Payment Terms / Retainage",
+                redlines: [
+                    "The rate of retainage shall be that stated on the first page of this Subcontract Agreement, which amount is equal to the percentage retained (the “Retainage”) from the Contractor’s payment by the Owner for the Subcontract Work.",
+                    "Owner shall pay the amount due on the Payment Application less retainage of [a specific percentage]. Retainage is generally due to the contractor or subcontractor once their work is complete.",
+                    "The Owner shall retain 10% of the contract sum from each progress payment until substantial completion of the project.",
+                    "Retainage. Except as provided in the second sentence of this Section, the Recipient shall comply in all respects with the requirements of Revised Code Sections 153.12, 153.13, 153.14, and 153.63, or other Law applicable to it including, but not limited to the provisions thereof, to the extent applicable to the Recipient, which require the holding of certain amounts from payments to be made to Contractors and the deposit of such amounts into an escrow account established pursuant to Revised Code Section 153.63.",
+                    "The Recipient may use its legally applicable construction requirements for the Project, including, but not limited to, its legally applicable requirements, if any, for the retaining of certain amounts from payments to be made to contractors in lieu of the requirements of Sections 153.12, 153.13, 153.14 and 153.63 of the Revised Code."
+                ],
+                options: {
+                    accept: {
+                        risk: 10, profit: -20, relation: 15,
+                        exp: "High retainage ties up cash flow, impacting profitability.",
+                        bp: "Payment retention should not exceed 10% unless project duration > 12 months."
+                    },
+                    counter: {
+                        risk: 0, profit: -5, relation: 10,
+                        exp: "Countering for lower retainage improves cash flow without much risk.",
+                        bp: "Counter with 5-10% retainage released upon substantial completion."
+                    },
+                    reject: {
+                        risk: -5, profit: 20, relation: -10,
+                        exp: "Rejecting ensures better margins but may annoy cost-sensitive customers.",
+                        bp: "Reject high retainage; tie to milestones."
+                    }
+                }
+            },
+            {
+                name: "Change Orders",
+                redlines: [
+                    "Any alteration or deviation from the Services mentioned or any other contractual specifications that result in a revision of this Agreement shall be executed and attached to this Agreement as a change order (“Change Order”).",
+                    "The State, without invalidating the Contract, may order changes in the Work within the general scope of the Contract consisting of additions, deletions or other revisions, the Contract Sum and the Contract Time being adjusted accordingly.",
+                    "If the Commonwealth issues any change order or other formal contract instrument either expanding or limiting the work to be performed under the Prime Contract, the Parties shall accept such Change Orders.",
+                    "A Proposed Change Order (PCO) is a written request submitted to the Architect by either the Contractor or the State requesting a change to the contract price and / or schedule. A Construction Change Directive (CCD) is a written document prepared by the State and / or Architect directing the Contractor to make changes in the Work where the State and the Contractor have not reached an agreement on proposed changes in the contract sum or contract time."
+                ],
+                options: {
+                    accept: {
+                        risk: 15, profit: -15, relation: 10,
+                        exp: "No markup on changes erodes profits on scope creep.",
+                        bp: "Insist on reasonable markup (10-15%) for changes."
+                    },
+                    counter: {
+                        risk: 5, profit: 0, relation: 5,
+                        exp: "Countering allows fair compensation for extra work.",
+                        bp: "Counter with time-and-materials billing for changes."
+                    },
+                    reject: {
+                        risk: -10, profit: 15, relation: -15,
+                        exp: "Rejection prevents unprofitable work but could halt negotiations.",
+                        bp: "Reject no-markup clauses; reference cost recovery."
+                    }
+                }
+            },
+            {
+                name: "Force Majeure",
+                redlines: [
+                    "The Party affected by Force Majeure shall not assume any liability under this Agreement. However, subject to the Party affected by Force Majeure having taken its reasonable and practicable efforts to perform this Agreement, the Party claiming for exemption of the liabilities may only be exempted from performing such liability as within limitation of the part performance delayed or prevented by Force Majeure.",
+                    "A Party shall not be considered to be in default or breach of this Agreement, and shall be excused from performance or liability for damages to the other Party, if and to the extent it shall be delayed in or prevented from performing or carrying out any of the provisions of this Agreement, arising out of or from any act, omission, or circumstance by or in consequence of any act of God, labor disturbance, sabotage, failure of contractors or suppliers of materials, act of the public enemy, war, invasion, insurrection, riot, fire, storm, flood, ice, earthquake, explosion, epidemic,",
+                    "If performance is suspended or delayed, in whole or in part, due to any of the causes described in this paragraph, after the causes have ceased to exist the Contractor will perform at no increased cost, unless the Department determines, in its sole discretion, that the delay will significantly impair the value of the Contract to the State of Florida or to Customers, in which case the Department may (1) accept allocated performance or deliveries from the Contractor, provided that the Contractor grants preferential treatment to Customers and the Depart...",
+                    "Contractor shall not be assessed with liquidated damages or unsatisfactory performance penalties during any delay beyond the time named for the performance of this Contract caused by any act of God, war, civil disorder, employment strike or other cause beyond its reasonable control, provided Contractor gives written notice of the cause of the delay to County within 36 hours of the start of the delay and Contractor avails himself of any available remedies."
+                ],
+                options: {
+                    accept: {
+                        risk: 20, profit: -10, relation: 10,
+                        exp: "Narrow definition leaves you liable for uncontrollable events like delays.",
+                        bp: "Broaden to include pandemics, strikes, and supply disruptions."
+                    },
+                    counter: {
+                        risk: 5, profit: 0, relation: 5,
+                        exp: "Countering adds protections without confrontation.",
+                        bp: "Counter with standard broad language."
+                    },
+                    reject: {
+                        risk: -10, profit: 10, relation: -15,
+                        exp: "Rejection ensures coverage but may signal distrust.",
+                        bp: "Reject narrow definitions; cite examples."
+                    }
+                }
+            },
+            {
+                name: "Termination for Convenience / Default",
+                redlines: [
+                    "The right to terminate without cause or the concept to “terminate for convenience” (originally utilized by the federal government during times of war1) has steadily evolved into a construction industry standard clause utilized by general contractors to terminate a subcontractor without having to establish the subcontractor as being in default and without the general contractor being liable for what would otherwise be a fundamental breach of contract damages, including consequential damages.",
+                    "A termination for convenience clause, or 'T for C' clause, enables a party to a contract to bring the contract to an end without the need to establish that the other party is in default, for example because the client party's needs have changed, or in order to arrange for another party to complete the contract.",
+                    "Nevertheless, a party wishing to exercise a termination for convenience right should ensure compliance with the terms of the contract and be mindful that the common law may require such rights to be exercised honestly and in good faith, as discussed below. As with termination for default, it is always a good starting point for a party considering termination to examine their construction contract.",
+                    "If a contract does not include a termination for convenience provision and the contractor is not in default, the contractor is generally entitled to compensation for work actually performed and profit it would have realized on the uncompleted work. A typical termination for convenience clause states:"
+                ],
+                options: {
+                    accept: {
+                        risk: 15, profit: -10, relation: 10,
+                        exp: "Allowing easy termination exposes you to sudden loss of contract without recourse.",
+                        bp: "Limit termination for convenience to specific conditions or require compensation for lost profits."
+                    },
+                    counter: {
+                        risk: 5, profit: 0, relation: 5,
+                        exp: "Countering adds notice periods or compensation requirements.",
+                        bp: "Counter with 30-day notice and payment for work done plus demobilization."
+                    },
+                    reject: {
+                        risk: -10, profit: 10, relation: -15,
+                        exp: "Rejecting prevents arbitrary termination but may deter flexible customers.",
+                        bp: "Reject if too broad; tie to mutual agreement."
+                    }
+                }
+            },
+            {
+                name: "Insurance Requirements",
+                redlines: [
+                    "The Contractor shall acquire and maintain, at its sole cost and expense, during the entire term of this Agreement, insurance coverage in the minimum amounts set forth in Exhibit C, attached hereto and incorporated herein by this reference. A waiver of subrogation and rights of recovery against the District, its directors, officers, employees, and agents is required for Commercial General Liability and workers’ compensation coverage.",
+                    "Without limiting the foregoing, the Company will (a) keep all of its physical property insured with casualty or physical hazard insurance on an 'all risks' basis, with broad form flood and earthquake coverages and electronic data processing coverage, with a full replacement cost endorsement and an 'agreed amount' clause in an amount equal to 100% of the full replacement cost of such property, (b) maintain all such workers' compensation or similar insurance as may be required by law and (c) maintain, in amounts and with deductibles equal to those generally maintained by businesses engaged in similar activities in similar geographic areas, general public liability insurance against claims of bodily injury, death or property damage occurring, on, in or about the properties of the Company; business interruption insurance; and product liability insurance.",
+                    "Tenant's Improvements, without limitation including liability under any applicable structural work act, and such other insurance as Landlord shall require; and the policies of or certificates evidencing such insurance must be delivered to Landlord prior to the commencement of any such Work.",
+                    "Borrower will (a) keep all of its physical property insured with casualty or physical hazard insurance on an 'all risks' basis, with broad form flood and earthquake coverages and electronic data processing coverage, with a full replacement cost endorsement and an 'agreed amount' clause in an amount equal to 100% of the full replacement cost of such property, (b) maintain all such workers' compensation or similar insurance as may be required by law and (c) maintain, in amounts and with deductibles equal to those generally maintained by businesses engaged in similar activities in similar geographic areas, general public liability insurance against claims of bodily injury, death or property damage occurring, on, in or about the properties of the"
+                ],
+                options: {
+                    accept: {
+                        risk: 20, profit: -15, relation: 10,
+                        exp: "Excessive insurance requirements increase costs without benefit.",
+                        bp: "Ensure requirements align with standard industry coverage; negotiate limits."
+                    },
+                    counter: {
+                        risk: 5, profit: -5, relation: 5,
+                        exp: "Countering reduces unnecessary coverage burdens.",
+                        bp: "Counter with mutual insurance obligations and reasonable limits."
+                    },
+                    reject: {
+                        risk: -10, profit: 15, relation: -15,
+                        exp: "Rejection avoids over-insurance but may lose the deal.",
+                        bp: "Reject if beyond your policy; provide evidence of existing coverage."
+                    }
+                }
+            },
+            {
+                name: "Liquidated Damages / Performance Penalties",
+                redlines: [
+                    "(a) Use the clause at 52.211-11, Liquidated Damages-Supplies, Services, or Research and Development, in fixed-price solicitations and contracts for supplies, services, or research and development when the contracting officer determines that liquidated damages are appropriate (see 11.501(a)). (b) Use the clause at 52.211-12, Liquidated Damages-Construction, in solicitations and contracts for construction, other than cost-plus-fixed-fee, when the contracting officer determines that liquidated damages are appropriate (see 11.501(a)).",
+                    "The Contractor’s Liquidated Damages per day, for each day of delay with respect to the Final Completion Date of the Works, shall be equal to those specified under Annex [●] of the Agreement. Such amount shall be treated as liquidated damages and not as a penalty for the loss to the Owner of the use of the facility in a final completed state of construction.",
+                    "If the contract specifies more than one completion date for separate parts or stages of the work, revise paragraph (a) of the clause to state the amount of liquidated damages for delay of each separate part or stage of the work. (c) Use the clause at 52.211-13, Time Extensions, in solicitations and contracts for construction that use the clause at 52.211-12, Liquidated Damages-Construction, when that clause has been revised as provided in paragraph (b) of this section.",
+                    "penalty when three conditions are met: (1) the damages to be anticipated from the breach are uncertain in amount or difficult to prove, (2) there was an intent by the parties to liquidate them in advance, and (3) the amount stipulated is a reasonable one, not greatly disproportionate to the presumable"
+                ],
+                options: {
+                    accept: {
+                        risk: 25, profit: -20, relation: 10,
+                        exp: "High liquidated damages can wipe out profits on delays.",
+                        bp: "Cap liquidated damages at a reasonable daily rate tied to actual losses."
+                    },
+                    counter: {
+                        risk: 10, profit: -10, relation: 5,
+                        exp: "Countering mitigates penalty risks.",
+                        bp: "Counter to make it non-penalty and reasonable estimate."
+                    },
+                    reject: {
+                        risk: -15, profit: 20, relation: -20,
+                        exp: "Rejection avoids penalties but risks no deal.",
+                        bp: "Reject if disproportionate; argue for actual damages only."
+                    }
+                }
+            }
+            // Now includes all 8 types with multiple real samples per clause for uniqueness
+        ];
+
+        const randomEvents = [
+            {
+                text: "Customer Legal cites industry standard language, pressuring you to concede.",
+                effect: { risk: 5, profit: -5, relation: -5 }
+            },
+            {
+                text: "Your legal team warns that acceptance creates downstream risk — think twice!",
+                effect: { risk: 10, relation: 5 }
+            },
+            {
+                text: "VP of Operations calls — project needs to start next week. Time pressure mounts.",
+                effect: { profit: -10, relation: -5 }
+            },
+            {
+                text: "Customer agrees to your language if you drop another clause. A trade-off appears.",
+                effect: { risk: -5, profit: 5, relation: 10 }
+            },
+            {
+                text: "Supply chain disruption hits — materials delayed unexpectedly.",
+                effect: { risk: 15, profit: -10 }
+            },
+            {
+                text: "Regulatory change announced — impacts clause interpretation.",
+                effect: { risk: 10, relation: -5 }
+            },
+            {
+                text: "Customer's finance team pushes for tighter payment terms.",
+                effect: { profit: -15, relation: -10 }
+            },
+            {
+                text: "Internal audit flags potential compliance issue.",
+                effect: { risk: 20, profit: 0 }
+            },
+            {
+                text: "Competitor's bid surfaces — customer leverages for concessions.",
+                effect: { relation: -15, profit: -5 }
+            },
+            {
+                text: "Positive news: Customer praises your flexibility, boosting rapport.",
+                effect: { relation: 15, risk: -5 }
+            },
+            {
+                text: "Weather forecast predicts delays — force majeure invocation possible.",
+                effect: { risk: 10, profit: -10 }
+            },
+            {
+                text: "Legal advisor suggests creative counter — opportunity arises.",
+                effect: { risk: -10, profit: 5 }
+            }
+            // Expanded to 12 for more randomness and scenarios
+        ];
+
+        const outcomes = [
+            { title: "Hero of the Legal Frontier", condition: (scores) => scores.risk < 50 && scores.profit > 50 && scores.relation > 50, desc: "Balanced negotiation — you win the deal without undue risk!" },
+            { title: "Paper Pusher", condition: (scores) => scores.profit < 40, desc: "You gave away too much; profitability suffers." },
+            { title: "The Redline Reaper", condition: (scores) => scores.relation < 40, desc: "Too aggressive — the customer walks away." },
+            { title: "Litigation Jackson!", condition: (scores) => scores.risk > 70, desc: "Ignored risks; a lawsuit is on the horizon." }
+        ];
+
+        // Game state
+        let scores = { risk: 0, profit: 100, relation: 100 };
+        let currentProject;
+        let currentCustomer;
+        let selectedClauses = [];
+        let currentClauseIndex = 0;
+        let transcript = [];
+        let gameOver = false;
+
+        function startGame() {
+            document.getElementById('title-screen').style.display = 'none';
+            document.getElementById('game').style.display = 'block';
+            document.getElementById('restart-btn').style.display = 'inline';
+            initGame();
+        }
+
+        function restartGame() {
+            location.reload();
+        }
+
+        function initGame() {
+            scores = { risk: 0, profit: 100, relation: 100 };
+            currentProject = projects[Math.floor(Math.random() * projects.length)];
+            currentCustomer = customerTypes[Math.floor(Math.random() * customerTypes.length)];
+            selectedClauses = shuffleArray(clauses).slice(0, Math.floor(Math.random() * 3) + 3); // 3-5 clauses
+            currentClauseIndex = 0;
+            transcript = [];
+            gameOver = false;
+            clearText();
+            appendText(`Welcome, Jackson! You're negotiating a contract for: ${currentProject}\nCustomer: ${currentCustomer.name}\n\nLet's review the draft.`);
+            updateScoreboard();
+            nextClause();
+        }
+
+        function nextClause() {
+            if (currentClauseIndex >= selectedClauses.length || gameOver) {
+                endGame();
+                return;
+            }
+            const clause = selectedClauses[currentClauseIndex];
+            const redline = clause.redlines[Math.floor(Math.random() * clause.redlines.length)];
+            appendText(`\n\nClause: ${clause.name}\nCustomer Redline: ${redline}`);
+            showChoices(['Accept', 'Counter', 'Reject']);
+        }
+
+        function handleChoice(choice) {
+            if (gameOver) return;
+            const clause = selectedClauses[currentClauseIndex];
+            const option = clause.options[choice.toLowerCase()];
+            let adjustedImpact = { ...option };
+
+            scores.risk += adjustedImpact.risk;
+            scores.profit += adjustedImpact.profit;
+            scores.relation += adjustedImpact.relation;
+            scores.risk = Math.max(0, Math.min(100, scores.risk));
+            scores.profit = Math.max(0, Math.min(100, scores.profit));
+            scores.relation = Math.max(0, Math.min(100, scores.relation));
+
+            transcript.push(`${clause.name}: ${choice}`);
+
+            appendText(`\nYou chose to ${choice}.\nExplanation: ${option.exp}`);
+            appendText(`\nBest Practice: <span class="learn-more" onclick="toggleLearnMore(this)">Click to expand</span><span class="hidden"> - ${option.bp}</span>`);
+
+            let reactionText = '';
+            if (choice === 'Accept') {
+                reactionText = 'Customer is pleased with your flexibility.';
+            } else if (choice === 'Counter') {
+                if (Math.random() < currentCustomer.pushbackChance) {
+                    reactionText = 'Customer pushes back on your counter.';
+                    scores.relation -= 5;
+                    appendText(reactionText);
+                    showChoices(['Accept Original', 'Insist on Counter']);
+                    return;
+                } else {
+                    reactionText = 'Customer accepts your counter.';
+                }
+            } else if (choice === 'Reject') {
+                if (Math.random() < currentCustomer.walkAwayChance) {
+                    reactionText = 'Customer is offended and walks away!';
+                    gameOver = true;
+                    scores.relation = 0;
+                    appendText(reactionText);
+                    endGame();
+                    return;
+                } else {
+                    reactionText = 'Customer grumbles but moves on.';
+                    scores.relation -= 10;
+                }
+            }
+
+            appendText(reactionText);
+
+            if (Math.random() > 0.5) {
+                const event = randomEvents[Math.floor(Math.random() * randomEvents.length)];
+                appendText(`\nCurveball: ${event.text}`);
+                if (event.effect) {
+                    scores.risk += event.effect.risk || 0;
+                    scores.profit += event.effect.profit || 0;
+                    scores.relation += event.effect.relation || 0;
+                }
+            }
+
+            if (Math.random() < 0.3) {
+                appendText("\nLegal Advisor: 'Remember, balance is key — don't give away the farm!'");
+            }
+
+            updateScoreboard();
+            currentClauseIndex++;
+            nextClause();
+        }
+
+        function endGame() {
+            appendText('\n\nNegotiation Complete!');
+            appendText('\nFinal Transcript:');
+            transcript.forEach(entry => appendText(`- ${entry}`));
+            let outcome = outcomes.find(o => o.condition(scores)) || outcomes[0];
+            appendText(`\nOutcome: ${outcome.title}\n${outcome.desc}`);
+            showChoices(['Restart']);
+        }
+
+        function updateScoreboard() {
+            const sb = document.getElementById('scoreboard');
+            sb.innerHTML = `Risk Exposure: ${scores.risk} (lower better) | Profitability: ${scores.profit} (higher better) | Relationship: ${scores.relation} (higher better)`;
+        }
+
+        function clearText() {
+            document.getElementById('text').innerHTML = '';
+        }
+
+        function appendText(text) {
+            const textDiv = document.getElementById('text');
+            textDiv.innerHTML += text + '\n';
+            textDiv.scrollTop = textDiv.scrollHeight;
+        }
+
+        function showChoices(choices) {
+            const choicesDiv = document.getElementById('choices');
+            choicesDiv.innerHTML = '';
+            choices.forEach(ch => {
+                const btn = document.createElement('button');
+                btn.textContent = ch;
+                btn.onclick = () => {
+                    if (ch === 'Restart') {
+                        restartGame();
+                    } else if (ch === 'Accept Original') {
+                        handleChoice('Accept');
+                    } else if (ch === 'Insist on Counter') {
+                        handleChoice('Reject');
+                    } else {
+                        handleChoice(ch);
+                    }
+                };
+                choicesDiv.appendChild(btn);
+            });
+        }
+
+        function toggleLearnMore(el) {
+            const next = el.nextElementSibling;
+            next.classList.toggle('hidden');
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Notes for expansion:
+        // - Added multiple real contract language samples to redlines for each clause.
+        // - Expanded projects, customers, and events for combinatorial variety (hundreds of unique playthroughs).
+        // - Included all requested clause types.
+        // - To add more: Extend the arrays with additional samples or items.
+    </script>
+</body>
+</html>
